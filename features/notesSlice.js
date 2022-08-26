@@ -1,10 +1,33 @@
-import { createSlice } from "@reduxjs/toolkit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 import { exp } from "react-native/Libraries/Animated/Easing";
+import { API, API_CREATE, API_POSTS, API_STATUS } from "../constants";
 
-const initialState = [
-    { id: "1", title: "First Post!", content: "Hello!"},
-    { id: "2", title: "Second Post!", content: "Mote Text"},
-];
+const initialState = {
+    post: [],
+    status: API_STATUS.idle,
+    error: null,
+};
+
+export const fetchPosts = createAsyncThunk("notes/fetchPosts", async () => {
+    const token = await AsyncStorage.getItem("token");
+    const response = await axios.get(API  + API_POSTS, {
+        headers: { Authorization: 'JWT $(token)'},
+    });
+    return response.data;
+})
+
+export const addNewPost = createAsyncThunk(
+    "notes/addNewPost",
+    async (newPost) => {
+        const token = await AsyncStorage.getItem("token");
+        const response = await axios.post(API + API_CREATE, newPost, {
+            headers: { Authorization: 'JWT $(token)' },
+        });
+        return response.data;
+    }
+);
 
 const notesSlice = createSlice ({
     name: "notes",
