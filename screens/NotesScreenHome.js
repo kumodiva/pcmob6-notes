@@ -5,15 +5,25 @@ import {
     TouchableOpacity,
     View,
   } from "react-native";
-  import React from "react";
-  import { useSelector } from "react-redux";
+  import React, { useEffect } from "react";
+  import { useDispatch, useSelector } from "react-redux";
   import { useNavigation } from "@react-navigation/native";
-  import { NOTES_SCREEN } from "../constants";
+  import { API_STATUS, NOTES_SCREEN } from "../constants";
+import { fetchPosts } from "../features/notesSlice";
   
   
   export default function NotesScreenHome() {
-    const posts = useSelector((state) => state.notes);
     const navigation = useNavigation();
+    const dispatcn = useDispatch();
+    const posts = useSelector((state) => state.notes.posts);
+    const isLoading = notesStatus === API_STATUS.pending;
+
+    useEffect(() => {
+      if (notesStatus === API_STATUS.idle) {
+        dispatcn(fetchPosts());
+      }
+    }, [notesStatus, dispatcn]);
+    
     function renderItem({ item }) {
       return (
         <TouchableOpacity style={styles.noteCard} onPress={() => {}}>

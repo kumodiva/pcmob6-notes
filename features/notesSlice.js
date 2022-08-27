@@ -1,7 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
-import { exp } from "react-native/Libraries/Animated/Easing";
 import { API, API_CREATE, API_POSTS, API_STATUS } from "../constants";
 
 const initialState = {
@@ -29,16 +28,28 @@ export const addNewPost = createAsyncThunk(
     }
 );
 
-const notesSlice = createSlice ({
+const notesSlice = createSlice({
     name: "notes",
     initialState,
-    reducers: {
-        noteAdded(state, action){
-            state.push(action.payload);
-        },
+    extraReducers(builder) {
+        builder
+        .addCase(fetchPosts.pending, (state) => {
+            state.status = API_STATUS.pending;
+        })
+        .addCase(fetchPosts.rejected,(State, action) => {
+            state.status = API_STATUS.fulfilled;
+
+            state.posts = state.posts.concat(action.payload);
+        })
+        .addCase(fetchPosts.rejected, (state, action) => {
+            state.status = API_STATUS.rejected;
+            state.error = action.error.message;
+            console.log("Failed to fetch posts. Error:", action.error.message);
+        })
+        .addCase(addNewPost.fulfilled, (state, action) => {
+            state.posts.push(action.payload);
+        })
     },
 });
-
-export const { noteAdded } = notesSlice.actions;
 
 export default notesSlice.reducer;
