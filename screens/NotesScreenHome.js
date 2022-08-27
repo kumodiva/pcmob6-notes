@@ -7,24 +7,24 @@
     TouchableOpacity,
     View,
   } from "react-native";
-  import { useDispatch, useSelector } from "react-redux";
   import { useNavigation } from "@react-navigation/native";
+  import { useDispatch, useSelector } from "react-redux";
   import { API_STATUS, NOTES_SCREEN } from "../constants";
   import { fetchPosts } from "../features/notesSlice";
   
   
   export default function NotesScreenHome() {
     const navigation = useNavigation();
-    const dispatcn = useDispatch();
+    const dispatch = useDispatch();
     const posts = useSelector((state) => state.notes.posts);
     const notesStatus = useSelector ((state) => state.notes.status);
     const isLoading = notesStatus === API_STATUS.pending;
 
     useEffect(() => {
       if (notesStatus === API_STATUS.idle) {
-        dispatcn(fetchPosts());
+        dispatch(fetchPosts());
       }
-    }, [notesStatus, dispatcn]);
+    }, [notesStatus, dispatch]);
     
     function renderItem({ item }) {
       return (
