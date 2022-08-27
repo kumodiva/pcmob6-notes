@@ -39,6 +39,8 @@
     return (
       <View style={styles.container}>
         <Text style={styles.title}>notes</Text>
+
+        {isLoading && <ActivityIndicator />}
   
         <FlatList
           data={posts}
