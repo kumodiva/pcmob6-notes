@@ -1,21 +1,23 @@
-import {
-    FlatList,
+  import React, { useEffect } from "react";
+  import {
+  ActivityIndicator,  
+  FlatList,
     StyleSheet,
     Text,
     TouchableOpacity,
     View,
   } from "react-native";
-  import React, { useEffect } from "react";
   import { useDispatch, useSelector } from "react-redux";
   import { useNavigation } from "@react-navigation/native";
   import { API_STATUS, NOTES_SCREEN } from "../constants";
-import { fetchPosts } from "../features/notesSlice";
+  import { fetchPosts } from "../features/notesSlice";
   
   
   export default function NotesScreenHome() {
     const navigation = useNavigation();
     const dispatcn = useDispatch();
     const posts = useSelector((state) => state.notes.posts);
+    const notesStatus = useSelector ((state) => state.notes.status);
     const isLoading = notesStatus === API_STATUS.pending;
 
     useEffect(() => {
